@@ -5,7 +5,6 @@
 #include <string>
 #include <fstream>
 
-
 template <typename T>
 struct ValRow
 {
@@ -53,7 +52,7 @@ public:
 			col.push_back(VR.size());
 		}
 
-
+		return;
 	}
 
 	void out(std::string &fileName)
@@ -86,21 +85,21 @@ public:
 		{
 			for (size_t m = 0; m < triangle.size(); m++)
 			{
+
 				if (n > m)
 				{
-					file << (triangle[m][n - m] != 0 ? triangle[m][n - m] : 0) << ' ';
+					file << triangle[m][n - m] << ' ';
 				}
-				if(n == m)
+				if (n == m)
 				{
-					file << (triangle[n][0] != 0 ? triangle[n][0] : 0) << ' ';
+					file <<  triangle[n][0] << ' ';
 				}
 			}
 			file << std::endl;
 		}
 		file.close();
-	
+
+		return;
 	}
-
-
 
 };
