@@ -3,6 +3,9 @@
 #include <iostream>
 #include <random>
 #include <string>
+#include <fstream>
+
+
 template <typename T>
 struct ValRow
 {
@@ -18,69 +21,42 @@ class CSC
 {
 	std::vector<ValRow<T>> VR;
 	std::vector<size_t> col;
+
 public:
 	void generate(const size_t &size, const unsigned &sparseness)
 	{
-		std::vector<std::string> strs;
-		strs.resize(size, "");
-		std::srand(10);//std::time(nullptr));
+
+		std::srand(std::time(nullptr));
 		for(size_t n = 0; n < size; n++)
 		{
 
-			ValRow<T> a(rand()%10, n);
-			if (a.val)
+			ValRow<T> block(rand()%10, n);
+			if (block.val)
 			{
-				VR.push_back(a);
+				VR.push_back(block);
 			}
-			strs[n] += std::to_string(a.val) + " ";
-
 
 			for (size_t m = 1+n; m < size; m++)
 			{
 
-				if(rand()%101 <= sparseness)
+				if(rand()%100 <= sparseness)
 				{
-					ValRow<T> b(rand()%10, m);
-					strs[m] += std::to_string(b.val) + " ";
-					if (b.val)
+					block.val = rand()%10;
+					
+					if (block.val)
 					{
-						VR.push_back(b);
+						block.row = m;
+						VR.push_back(block);
 					}
-				}
-				else
-				{
-					strs[m] += std::to_string(0) + " ";
 				}
 			}
 			col.push_back(VR.size());
 		}
 
 
-		for(int i = 0; i < VR.size();i++)
-		{
-			std::cout << VR[i].val << ' ';
-		}
-		std::cout << std::endl;
-		for (int i = 0; i < VR.size(); i++)
-		{
-			std::cout << VR[i].row << ' ';
-		}
-		std::cout << std::endl;
-		for (int i = 0; i < col.size(); i++)
-		{
-			std::cout << col[i] << ' ';
-		}
-		std::cout << std::endl;
-		for(auto a : strs)
-		{
-			std::cout << a << std::endl;
-		
-		}
-		std::cout << std::endl;
-
 	}
 
-	void print()
+	void out(std::string &fileName)
 	{
 		std::vector<std::vector<T>> triangle;
 		size_t colIter = 0;
@@ -97,9 +73,7 @@ public:
 			}
 			if(i == col[colIter])
 			{
-
 				colIter++;
-				
 				triangle.push_back(column);
 				column.clear();
 				column.resize(col.size()-colIter, 0);
@@ -107,27 +81,23 @@ public:
 
 		}
 
-
+		std::ofstream file(fileName);
 		for(size_t n = 0; n < triangle.size(); n++)
 		{
 			for (size_t m = 0; m < triangle.size(); m++)
 			{
-				if (n < m)
+				if (n > m)
 				{
-					std::cout << (triangle[n][m - n] != 0 ? triangle[n][m - n] : 0) << ' ';
-				}
-				if (n > m) 
-				{
-					std::cout << (triangle[m][n-m] != 0 ? triangle[m][n-m] : 0) << ' ';
+					file << (triangle[m][n - m] != 0 ? triangle[m][n - m] : 0) << ' ';
 				}
 				if(n == m)
 				{
-					std::cout << (triangle[n][0] != 0 ? triangle[n][0] : 0) << ' ';
+					file << (triangle[n][0] != 0 ? triangle[n][0] : 0) << ' ';
 				}
 			}
-			std::cout << std::endl;
+			file << std::endl;
 		}
-	
+		file.close();
 	
 	}
 
